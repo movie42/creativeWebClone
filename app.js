@@ -1,21 +1,33 @@
-const express = require("express");
-const { apply } = require("file-loader");
-const app = express();
-const path = require("path");
-const port = 3000;
+import dotenv from "dotenv";
+dotenv.config();
 
+import express from "express";
+import path from "path";
+import prismicHelper from "@prismicio/helpers";
+import { client } from "./config/prismicConfig.js";
+
+const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
+
+app.use((req, res, next) => {
+  res.locals.ctx = {
+    prismicHelper,
+  };
+  next();
+});
 
 app.get("/", (req, res) => {
   res.render("pages/home");
 });
 
-app.get("/about", (req, res) => {
-  res.render("pages/about");
+app.get("/about", async (req, res) => {
+  const documents = await client.getFirst();
+  console.log(documents);
+  res.render("pages/about", { documents });
 });
 
-app.get("/detail/:id", (req, res) => {
+app.get("/detail/:uid", (req, res) => {
   res.render("pages/detail");
 });
 
@@ -23,6 +35,6 @@ app.get("/collections", (req, res) => {
   res.render("pages/collections");
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+app.listen(3000, () => {
+  console.log(`Example app listening at http://localhost:3000`);
 });
