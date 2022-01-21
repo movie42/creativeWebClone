@@ -14,6 +14,10 @@ const routes = [
     type: "about",
     path: "/about",
   },
+  {
+    type: "product",
+    path: "/detail/:uid",
+  },
 ];
 
 export const client = prismic.createClient(endpoint, {

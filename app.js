@@ -3,6 +3,7 @@ dotenv.config();
 
 import express from "express";
 import path from "path";
+
 import * as prismicH from "@prismicio/helpers";
 import { client } from "./config/prismicConfig.js";
 
@@ -21,17 +22,26 @@ app.get("/", (req, res) => {
 });
 
 app.get("/about", async (req, res) => {
-  const { data } = await client.getFirst();
-  console.log(data);
-  res.render("pages/about", { data });
-});
+  const { data: meta } = await client.getSingle("meta");
 
-app.get("/detail/:uid", (req, res) => {
-  res.render("pages/detail");
+  const { data: about } = await client.getSingle("about");
+  res.render("pages/about", { about, meta });
 });
 
 app.get("/collections", (req, res) => {
   res.render("pages/collections");
+});
+
+app.get("/detail/:uid", async (req, res) => {
+  const {
+    params: { uid },
+  } = req;
+  const { data: meta } = await client.getSingle("meta");
+  const { data } = await client.getByUID("product", uid, {
+    fetchLinks: "collection.title",
+  });
+  console.log(data);
+  res.render("pages/detail", { meta, data });
 });
 
 app.listen(3000, () => {

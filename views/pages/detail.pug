@@ -4,4 +4,25 @@ block variables
     - var template = 'detail'
 
 block content
-    h1.collections__title About
+    .detail 
+        .detail__wrapper 
+            figure.detail__media 
+                img.detail__media__image(src=data.image.url alt=data.image.alt)
+        .detail__information 
+            p.detail__information=data.collection.data.title
+            
+            h1.detail__information__title=data.title
+
+            .detail__information__content 
+                .detail__information_highlight 
+                    each highlight in data.highlight
+                        p.detail__information__highlight 
+                            svg.detail__information__highlight__icon 
+                                use(xlink:href=`sprite-${highlight.highlight_icons.toLowerCase()}`)
+                            span.detail__information__highlight__texxt=highlight.hightlight_text
+                .detail__information_list 
+                    each item in data.infomations
+                        p.detail__information__item 
+                            strong.detail__information__item__title=item.infomation_label
+                            span.detail__information__item__description=item.informations_description
+                a.detail__information__link(href=data.link_url.url target="_blank")=data.link_text
